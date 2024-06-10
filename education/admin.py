@@ -1,18 +1,18 @@
 from django.contrib import admin
-from .models import Doctor,Patient,Appointment,PatientDischargeDetails
+from .models import Counsellor,Student,Appointment,StudentDischargeDetails
 # Register your models here.
-class DoctorAdmin(admin.ModelAdmin):
+class CounsellorAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Doctor, DoctorAdmin)
+admin.site.register(Counsellor, CounsellorAdmin)
 
-class PatientAdmin(admin.ModelAdmin):
+class StudentAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Patient, PatientAdmin)
+admin.site.register(Student, StudentAdmin)
 
 class AppointmentAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Appointment, AppointmentAdmin)
 
-class PatientDischargeDetailsAdmin(admin.ModelAdmin):
+class StudentDischargeDetailsAdmin(admin.ModelAdmin):
     pass
-admin.site.register(PatientDischargeDetails, PatientDischargeDetailsAdmin)
+admin.site.register(StudentDischargeDetails, StudentDischargeDetailsAdmin)

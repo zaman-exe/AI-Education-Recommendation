@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        .container {
+            margin: 150px auto;
+            max-width: 900px;
+        }
+        .card {
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .center {
+            text-align: center;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .button-green {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .button-red {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .button-blue {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let page = 1;
+            const answers = new Array(10).fill("");
+            const maxPage = 5;
+
+            const questions = [
+                "What are your top skill or strength that you believe are essential for your future career?",
+                "What type of work environment do you thrive in the most?",
+                "What are your long-term career goals, and how do you plan to achieve them?",
+                "Describe a time when you successfully solved a challenging problem or overcame a significant obstacle. How did you handle it?",
+                "What subjects or activities do you enjoy the most?",
+                "What are your values and priorities when it comes to choosing a career?",
+                "Describe a past experience where you demonstrated leadership or took initiative. How did it make you feel?",
+                "How do you handle failure or setbacks in your academic or professional life?",
+                "What industries or fields are you most interested in exploring for your future career? Why?",
+                "Describe your ideal job role or position. What responsibilities and tasks would you like to have?",
+            ];
+
+            const labels = [
+                ["Analytical", "Creative", "Organized", "Adaptable"],
+                ["Collaborative", "Independent", "Fast-paced", "Structured"],
+                ["Growth", "Leadership", "Work-life balance", "Financial success"],
+                ["Problem-solving", "Decision-making", "Time management", "Conflict resolution"],
+                ["STEM", "Humanities", "Arts", "Sports"],
+                ["Work-life balance", "Salary", "Impact on society", "Job security"],
+                ["Confident", "Empowered", "Motivated", "Responsible"],
+                ["Learning opportunity", "Lesson for improvement", "Motivation to work harder", "Acceptance of reality"],
+                ["Technology", "Healthcare", "Finance", "Education"],
+                ["Leadership", "Problem-solving", "Creative thinking", "Team collaboration"],
+            ];
+
+            function handleAnswerChange(index, value) {
+                answers[index] = value;
+            }
+
+            function handleSubmit(e) {
+                e.preventDefault();
+                if (answers.some(answer => answer === "")) {
+                    Toastify({ text: "Please answer all questions before submitting.", backgroundColor: "red" }).showToast();
+                } else {
+                    page = maxPage;
+                    renderPage();
+                }
+            }
+
+            function handlePageChange(direction) {
+                if (direction === "next" && page < maxPage) {
+                    if (
+                        (page === 1 && answers.slice(0, 3).some(answer => answer === "")) ||
+                        (page === 2 && answers.slice(3, 6).some(answer => answer === "")) ||
+                        (page === 3 && answers.slice(6, 9).some(answer => answer === "")) ||
+                        (page === 4 && answers.slice(9).some(answer => answer === ""))
+                    ) {
+                        Toastify({ text: "Please answer all questions before proceeding.", backgroundColor: "red" }).showToast();
+                    } else {
+                        page++;
+                        renderPage();
+                    }
+                } else if (direction === "prev" && page > 1) {
+                    page--;
+                    renderPage();
+                }
+            }
+
+            function calculateAccuracy() {
+                const answeredCount = answers.filter(answer => answer !== "").length;
+                return ((answeredCount / questions.length) * 100).toFixed(2);
+            }
+
+            function handleRetakeTest() {
+                page = 1;
+                answers.fill("");
+                renderPage();
+            }
+
+            function handleClearResults() {
+                answers.fill("");
+                page = 1;
+                renderPage();
+            }
+
+            function renderPage() {
+                const container = document.querySelector(".container");
+                container.innerHTML = "";
+
+                if (page === maxPage) {
+                    const resultsDiv = document.createElement("div");
+                    resultsDiv.classList.add("card");
+                    resultsDiv.innerHTML = `
+                        <h2>Test Results</h2>
+                        <div class="center">
+                            <svg width="100" height="100">
+                                <circle cx="50" cy="50" r="40" stroke="#007bff" stroke-width="8" fill="none"></circle>
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="20" fill="#007bff">
+                                    ${calculateAccuracy()}%
+                                </text>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2>Your Recommended degree is :</h2>
+                            <p>DEGREE 1</p>
+                            <p>DEGREE 2</p>
+                            <p>DEGREE 3</p>
+                        </div>
+                        <div class="center" style="margin-top: 20px;">
+                            <button class="button button-green" onclick="handleRetakeTest()">Retake Test</button>
+                            <button class="button button-red" onclick="handleClearResults()">Clear All Results</button>
+                        </div>
+                    `;
+                    container.appendChild(resultsDiv);
+                } else {
+                    const pageDiv = document.createElement("div");
+                    pageDiv.innerHTML = `
+                        <div class="center" style="margin-bottom: 20px;">
+                            <h2>Page ${page}</h2>
+                        </div>
+                    `;
+
+                    const form = document.createElement("form");
+                    if (page === maxPage - 1) form.onsubmit = handleSubmit;
+
+                    questions.slice((page - 1) * 3, page === maxPage - 1 ? page * 3 + 1 : page * 3).forEach((question, index) => {
+                        const questionDiv = document.createElement("div");
+                        questionDiv.classList.add("card");
+                        questionDiv.innerHTML = `
+                            <h5 style="margin-bottom: 10px;">${question}</h5>
+                            <div style="display: flex; flex-direction: column; gap: 20px; padding: 30px;">
+                                ${labels[(page - 1) * 3 + index].map((label, labelIndex) => `
+                                    <label style="margin-bottom: 5px; font-size: 16px;">
+                                        <input type="radio" name="question-${(page - 1) * 3 + index}" value="${label}" onchange="handleAnswerChange(${(page - 1) * 3 + index}, '${label}')">
+                                        ${label}
+                                    </label>
+                                `).join('')}
+                            </div>
+                        `;
+                        form.appendChild(questionDiv);
+                    });
+
+                    if (page > 1) {
+                        const prevButton = document.createElement("button");
+                        prevButton.classList.add("button", "button-red");
+                        prevButton.innerText = "Previous Page";
+                        prevButton.onclick = () => handlePageChange("prev");
+                        form.appendChild(prevButton);
+                    }
+
+                    if (page < maxPage) {
+                        const nextButton = document.createElement("button");
+                        nextButton.classList.add("button", "button-blue");
+                        nextButton.innerText = "Next Page";
+                        nextButton.onclick = () => handlePageChange("next");
+                        nextButton.type = "button";
+                        form.appendChild(nextButton);
+                    }
+
+                    if (page === maxPage - 1) {
+                        const submitButton = document.createElement("button");
+                        submitButton.classList.add("button", "button-green");
+                        submitButton.innerText = "Submit Test";
+                        submitButton.type = "submit";
+                        form.appendChild(submitButton);
+                    }
+
+                    pageDiv.appendChild(form);
+                    container.appendChild(pageDiv);
+                }
+            }
+
+            renderPage();
+        });
+    </script>
+</head>
+<body>
+    <div class="container"></div>
+</body>
+</html>

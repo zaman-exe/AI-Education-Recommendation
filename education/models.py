@@ -3,19 +3,19 @@ from django.contrib.auth.models import User
 
 
 
-departments=[('Cardiologist','Cardiologist'),
-('Dermatologists','Dermatologists'),
-('Emergency Medicine Specialists','Emergency Medicine Specialists'),
-('Allergists/Immunologists','Allergists/Immunologists'),
-('Anesthesiologists','Anesthesiologists'),
-('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
+departments=[('O level Counseling','O level Counseling'),
+('A level Counseling','A level Counseling'),
+('Matric Science level Counseling','Matric Science level Counseling'),
+('Fsc Pre-Medical Counseling','Fsc Pre-Medical Counseling'),
+('Fsc Pre-Engineering Counseling','Fsc Pre-Engineering Counseling'),
+('ICS Counseling','ICS Counseling')
 ]
-class Doctor(models.Model):
+class Counsellor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    profile_pic= models.ImageField(upload_to='profile_pic/CounsellorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
-    department= models.CharField(max_length=50,choices=departments,default='Cardiologist')
+    department= models.CharField(max_length=50,choices=departments,default='A level Counseling')
     status=models.BooleanField(default=False)
     @property
     def get_name(self):
@@ -28,13 +28,13 @@ class Doctor(models.Model):
 
 
 
-class Patient(models.Model):
+class Student(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
+    profile_pic= models.ImageField(upload_to='profile_pic/StudentProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=False)
     symptoms = models.CharField(max_length=100,null=False)
-    assignedDoctorId = models.PositiveIntegerField(null=True)
+    assignedCounsellorId = models.PositiveIntegerField(null=True)
     admitDate=models.DateField(auto_now=True)
     status=models.BooleanField(default=False)
     @property
@@ -48,20 +48,20 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
-    patientId=models.PositiveIntegerField(null=True)
-    doctorId=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40,null=True)
-    doctorName=models.CharField(max_length=40,null=True)
+    studentId=models.PositiveIntegerField(null=True)
+    counsellorId=models.PositiveIntegerField(null=True)
+    studentName=models.CharField(max_length=40,null=True)
+    counsellorName=models.CharField(max_length=40,null=True)
     appointmentDate=models.DateField(auto_now=True)
     description=models.TextField(max_length=500)
     status=models.BooleanField(default=False)
 
 
 
-class PatientDischargeDetails(models.Model):
-    patientId=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40)
-    assignedDoctorName=models.CharField(max_length=40)
+class StudentDischargeDetails(models.Model):
+    studentId=models.PositiveIntegerField(null=True)
+    studentName=models.CharField(max_length=40)
+    assignedCounsellorName=models.CharField(max_length=40)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
     symptoms = models.CharField(max_length=100,null=True)
@@ -72,11 +72,7 @@ class PatientDischargeDetails(models.Model):
 
     roomCharge=models.PositiveIntegerField(null=False)
     medicineCost=models.PositiveIntegerField(null=False)
-    doctorFee=models.PositiveIntegerField(null=False)
+    counsellorFee=models.PositiveIntegerField(null=False)
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
 
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders

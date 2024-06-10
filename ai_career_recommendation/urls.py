@@ -1,11 +1,4 @@
-"""
 
-Developed By : sumit kumar
-facebook : fb.com/sumit.luv
-Youtube :youtube.com/lazycoders
-
-
-"""
 
 
 
@@ -27,16 +20,16 @@ urlpatterns = [
 
 
     path('adminclick', views.adminclick_view),
-    path('doctorclick', views.doctorclick_view),
-    path('patientclick', views.patientclick_view),
+    path('counsellorclick', views.counsellorclick_view),
+    path('studentclick', views.studentclick_view),
 
     path('adminsignup', views.admin_signup_view),
-    path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
-    path('patientsignup', views.patient_signup_view),
+    path('counsellorsignup', views.counsellor_signup_view,name='counsellorsignup'),
+    path('studentsignup', views.student_signup_view),
     
     path('adminlogin', LoginView.as_view(template_name='education/adminlogin.html')),
-    path('doctorlogin', LoginView.as_view(template_name='education/doctorlogin.html')),
-    path('patientlogin', LoginView.as_view(template_name='education/patientlogin.html')),
+    path('counsellorlogin', LoginView.as_view(template_name='education/counsellorlogin.html')),
+    path('studentlogin', LoginView.as_view(template_name='education/studentlogin.html')),
 
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
@@ -45,27 +38,27 @@ urlpatterns = [
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
 
-    path('admin-doctor', views.admin_doctor_view,name='admin-doctor'),
-    path('admin-view-doctor', views.admin_view_doctor_view,name='admin-view-doctor'),
-    path('delete-doctor-from-education/<int:pk>', views.delete_doctor_from_education_view,name='delete-doctor-from-education'),
-    path('update-doctor/<int:pk>', views.update_doctor_view,name='update-doctor'),
-    path('admin-add-doctor', views.admin_add_doctor_view,name='admin-add-doctor'),
-    path('admin-approve-doctor', views.admin_approve_doctor_view,name='admin-approve-doctor'),
-    path('approve-doctor/<int:pk>', views.approve_doctor_view,name='approve-doctor'),
-    path('reject-doctor/<int:pk>', views.reject_doctor_view,name='reject-doctor'),
-    path('admin-view-doctor-specialisation',views.admin_view_doctor_specialisation_view,name='admin-view-doctor-specialisation'),
+    path('admin-counsellor', views.admin_counsellor_view,name='admin-counsellor'),
+    path('admin-view-counsellor', views.admin_view_counsellor_view,name='admin-view-counsellor'),
+    path('delete-counsellor-from-education/<int:pk>', views.delete_counsellor_from_education_view,name='delete-counsellor-from-education'),
+    path('update-counsellor/<int:pk>', views.update_counsellor_view,name='update-counsellor'),
+    path('admin-add-counsellor', views.admin_add_counsellor_view,name='admin-add-counsellor'),
+    path('admin-approve-counsellor', views.admin_approve_counsellor_view,name='admin-approve-counsellor'),
+    path('approve-counsellor/<int:pk>', views.approve_counsellor_view,name='approve-counsellor'),
+    path('reject-counsellor/<int:pk>', views.reject_counsellor_view,name='reject-counsellor'),
+    path('admin-view-counsellor-specialisation',views.admin_view_counsellor_specialisation_view,name='admin-view-counsellor-specialisation'),
 
 
-    path('admin-patient', views.admin_patient_view,name='admin-patient'),
-    path('admin-view-patient', views.admin_view_patient_view,name='admin-view-patient'),
-    path('delete-patient-from-education/<int:pk>', views.delete_patient_from_education_view,name='delete-patient-from-education'),
-    path('update-patient/<int:pk>', views.update_patient_view,name='update-patient'),
-    path('admin-add-patient', views.admin_add_patient_view,name='admin-add-patient'),
-    path('admin-approve-patient', views.admin_approve_patient_view,name='admin-approve-patient'),
-    path('approve-patient/<int:pk>', views.approve_patient_view,name='approve-patient'),
-    path('reject-patient/<int:pk>', views.reject_patient_view,name='reject-patient'),
-    path('admin-discharge-patient', views.admin_discharge_patient_view,name='admin-discharge-patient'),
-    path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
+    path('admin-student', views.admin_student_view,name='admin-student'),
+    path('admin-view-student', views.admin_view_student_view,name='admin-view-student'),
+    path('delete-student-from-education/<int:pk>', views.delete_student_from_education_view,name='delete-student-from-education'),
+    path('update-student/<int:pk>', views.update_student_view,name='update-student'),
+    path('admin-add-student', views.admin_add_student_view,name='admin-add-student'),
+    path('admin-approve-student', views.admin_approve_student_view,name='admin-approve-student'),
+    path('approve-student/<int:pk>', views.approve_student_view,name='approve-student'),
+    path('reject-student/<int:pk>', views.reject_student_view,name='reject-student'),
+    path('admin-discharge-student', views.admin_discharge_student_view,name='admin-discharge-student'),
+    path('discharge-student/<int:pk>', views.discharge_student_view,name='discharge-student'),
     path('download-pdf/<int:pk>', views.download_pdf_view,name='download-pdf'),
 
 
@@ -78,34 +71,34 @@ urlpatterns = [
 ]
 
 
-#---------FOR DOCTOR RELATED URLS-------------------------------------
+#---------FOR counsellor RELATED URLS-------------------------------------
 urlpatterns +=[
-    path('doctor-dashboard', views.doctor_dashboard_view,name='doctor-dashboard'),
+    path('counsellor-dashboard', views.counsellor_dashboard_view,name='counsellor-dashboard'),
     path('search', views.search_view,name='search'),
 
-    path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
-    path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
-    path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
+    path('counsellor-student', views.counsellor_student_view,name='counsellor-student'),
+    path('counsellor-view-student', views.counsellor_view_student_view,name='counsellor-view-student'),
+    path('counsellor-view-discharge-student',views.counsellor_view_discharge_student_view,name='counsellor-view-discharge-student'),
 
-    path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
-    path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
-    path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
+    path('counsellor-appointment', views.counsellor_appointment_view,name='counsellor-appointment'),
+    path('counsellor-view-appointment', views.counsellor_view_appointment_view,name='counsellor-view-appointment'),
+    path('counsellor-delete-appointment',views.counsellor_delete_appointment_view,name='counsellor-delete-appointment'),
     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
 ]
 
 
 
 
-#---------FOR PATIENT RELATED URLS-------------------------------------
+#---------FOR student RELATED URLS-------------------------------------
 urlpatterns +=[
 
-    path('patient-dashboard', views.patient_dashboard_view,name='patient-dashboard'),
-    path('patient-appointment', views.patient_appointment_view,name='patient-appointment'),
-    path('patient-book-appointment', views.patient_book_appointment_view,name='patient-book-appointment'),
-    path('patient-view-appointment', views.patient_view_appointment_view,name='patient-view-appointment'),
-    path('patient-view-doctor', views.patient_view_doctor_view,name='patient-view-doctor'),
-    path('searchdoctor', views.search_doctor_view,name='searchdoctor'),
-    path('patient-discharge', views.patient_discharge_view,name='patient-discharge'),
+    path('student-dashboard', views.student_dashboard_view,name='student-dashboard'),
+    path('student-appointment', views.student_appointment_view,name='student-appointment'),
+    path('student-book-appointment', views.student_book_appointment_view,name='student-book-appointment'),
+    path('student-view-appointment', views.student_view_appointment_view,name='student-view-appointment'),
+    path('student-view-counsellor', views.student_view_counsellor_view,name='student-view-counsellor'),
+    path('searchcounsellor', views.search_counsellor_view,name='searchcounsellor'),
+    path('student-discharge', views.student_discharge_view,name='student-discharge'),
 
 ]
 

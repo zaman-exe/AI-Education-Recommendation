@@ -19,25 +19,25 @@ def home_view(request):
     return render(request,'education/index.html')
 
 
-#for showing signup/login button for admin(by sumit)
+#for showing signup/login button for admin
 def adminclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'education/adminclick.html')
 
 
-#for showing signup/login button for doctor(by sumit)
-def doctorclick_view(request):
+#for showing signup/login button for Counsellor
+def counsellorclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'education/doctorclick.html')
+    return render(request,'education/counsellorclick.html')
 
 
-#for showing signup/login button for patient(by sumit)
-def patientclick_view(request):
+#for showing signup/login button for student
+def studentclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'education/patientclick.html')
+    return render(request,'education/studentclick.html')
 
 
 
@@ -58,76 +58,76 @@ def admin_signup_view(request):
 
 
 
-def doctor_signup_view(request):
-    userForm=forms.DoctorUserForm()
-    doctorForm=forms.DoctorForm()
-    mydict={'userForm':userForm,'doctorForm':doctorForm}
+def counsellor_signup_view(request):
+    userForm=forms.CounsellorUserForm()
+    counsellorForm=forms.CounsellorForm()
+    mydict={'userForm':userForm,'counsellorForm':counsellorForm}
     if request.method=='POST':
-        userForm=forms.DoctorUserForm(request.POST)
-        doctorForm=forms.DoctorForm(request.POST,request.FILES)
-        if userForm.is_valid() and doctorForm.is_valid():
+        userForm=forms.CounsellorUserForm(request.POST)
+        counsellorForm=forms.CounsellorForm(request.POST,request.FILES)
+        if userForm.is_valid() and counsellorForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
-            doctor=doctorForm.save(commit=False)
-            doctor.user=user
-            doctor=doctor.save()
-            my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
-            my_doctor_group[0].user_set.add(user)
-        return HttpResponseRedirect('doctorlogin')
-    return render(request,'education/doctorsignup.html',context=mydict)
+            counsellor=counsellorForm.save(commit=False)
+            counsellor.user=user
+            counsellor=counsellor.save()
+            my_counsellor_group = Group.objects.get_or_create(name='Counsellor')
+            my_counsellor_group[0].user_set.add(user)
+        return HttpResponseRedirect('counsellorlogin')
+    return render(request,'education/counsellorsignup.html',context=mydict)
 
 
-def patient_signup_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
+def student_signup_view(request):
+    userForm=forms.StudentUserForm()
+    studentForm=forms.StudentForm()
+    mydict={'userForm':userForm,'studentForm':studentForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
-        if userForm.is_valid() and patientForm.is_valid():
+        userForm=forms.StudentUserForm(request.POST)
+        studentForm=forms.StudentForm(request.POST,request.FILES)
+        if userForm.is_valid() and studentForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient=patient.save()
-            my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
-        return HttpResponseRedirect('patientlogin')
-    return render(request,'education/patientsignup.html',context=mydict)
+            student=studentForm.save(commit=False)
+            student.user=user
+            student.assignedCounsellorId=request.POST.get('assignedCounsellorId')
+            student=student.save()
+            my_student_group = Group.objects.get_or_create(name='Student')
+            my_student_group[0].user_set.add(user)
+        return HttpResponseRedirect('studentlogin')
+    return render(request,'education/studentsignup.html',context=mydict)
 
 
 
 
 
 
-#-----------for checking user is doctor , patient or admin(by sumit)
+#-----------for checking user is Counsellor , student or admin
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
-def is_doctor(user):
-    return user.groups.filter(name='DOCTOR').exists()
-def is_patient(user):
-    return user.groups.filter(name='PATIENT').exists()
+def is_counsellor(user):
+    return user.groups.filter(name='Counsellor').exists()
+def is_student(user):
+    return user.groups.filter(name='Student').exists()
 
 
-#---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
+#---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,Counsellor OR Student
 def afterlogin_view(request):
     if is_admin(request.user):
         return redirect('admin-dashboard')
-    elif is_doctor(request.user):
-        accountapproval=models.Doctor.objects.all().filter(user_id=request.user.id,status=True)
+    elif is_counsellor(request.user):
+        accountapproval=models.Counsellor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
-            return redirect('doctor-dashboard')
+            return redirect('counsellor-dashboard')
         else:
-            return render(request,'education/doctor_wait_for_approval.html')
-    elif is_patient(request.user):
-        accountapproval=models.Patient.objects.all().filter(user_id=request.user.id,status=True)
+            return render(request,'education/counsellor_wait_for_approval.html')
+    elif is_student(request.user):
+        accountapproval=models.Student.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
-            return redirect('patient-dashboard')
+            return redirect('student-dashboard')
         else:
-            return render(request,'education/patient_wait_for_approval.html')
+            return render(request,'education/student_wait_for_approval.html')
 
 
 
@@ -143,24 +143,24 @@ def afterlogin_view(request):
 @user_passes_test(is_admin)
 def admin_dashboard_view(request):
     #for both table in admin dashboard
-    doctors=models.Doctor.objects.all().order_by('-id')
-    patients=models.Patient.objects.all().order_by('-id')
+    counsellors=models.Counsellor.objects.all().order_by('-id')
+    students=models.Student.objects.all().order_by('-id')
     #for three cards
-    doctorcount=models.Doctor.objects.all().filter(status=True).count()
-    pendingdoctorcount=models.Doctor.objects.all().filter(status=False).count()
+    counsellorcount=models.Counsellor.objects.all().filter(status=True).count()
+    pendingcounsellorcount=models.Counsellor.objects.all().filter(status=False).count()
 
-    patientcount=models.Patient.objects.all().filter(status=True).count()
-    pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
+    studentcount=models.Student.objects.all().filter(status=True).count()
+    pendingstudentcount=models.Student.objects.all().filter(status=False).count()
 
     appointmentcount=models.Appointment.objects.all().filter(status=True).count()
     pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
     mydict={
-    'doctors':doctors,
-    'patients':patients,
-    'doctorcount':doctorcount,
-    'pendingdoctorcount':pendingdoctorcount,
-    'patientcount':patientcount,
-    'pendingpatientcount':pendingpatientcount,
+    'counsellors':counsellors,
+    'students':students,
+    'counsellorcount':counsellorcount,
+    'pendingcounsellorcount':pendingcounsellorcount,
+    'studentcount':studentcount,
+    'pendingstudentcount':pendingstudentcount,
     'appointmentcount':appointmentcount,
     'pendingappointmentcount':pendingappointmentcount,
     }
@@ -170,167 +170,167 @@ def admin_dashboard_view(request):
 # this view for sidebar click on admin page
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_doctor_view(request):
-    return render(request,'education/admin_doctor.html')
+def admin_counsellor_view(request):
+    return render(request,'education/admin_counsellor.html')
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_view_doctor_view(request):
-    doctors=models.Doctor.objects.all().filter(status=True)
-    return render(request,'education/admin_view_doctor.html',{'doctors':doctors})
+def admin_view_counsellor_view(request):
+    counsellors=models.Counsellor.objects.all().filter(status=True)
+    return render(request,'education/admin_view_counsellor.html',{'counsellors':counsellors})
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def delete_doctor_from_education_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    user=models.User.objects.get(id=doctor.user_id)
+def delete_counsellor_from_education_view(request,pk):
+    counsellor=models.Counsellor.objects.get(id=pk)
+    user=models.User.objects.get(id=counsellor.user_id)
     user.delete()
-    doctor.delete()
-    return redirect('admin-view-doctor')
+    counsellor.delete()
+    return redirect('admin-view-counsellor')
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def update_doctor_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    user=models.User.objects.get(id=doctor.user_id)
+def update_counsellor_view(request,pk):
+    counsellor=models.Counsellor.objects.get(id=pk)
+    user=models.User.objects.get(id=counsellor.user_id)
 
-    userForm=forms.DoctorUserForm(instance=user)
-    doctorForm=forms.DoctorForm(request.FILES,instance=doctor)
-    mydict={'userForm':userForm,'doctorForm':doctorForm}
+    userForm=forms.CounsellorUserForm(instance=user)
+    counsellorForm=forms.CounsellorForm(request.FILES,instance=counsellor)
+    mydict={'userForm':userForm,'counsellorForm':counsellorForm}
     if request.method=='POST':
-        userForm=forms.DoctorUserForm(request.POST,instance=user)
-        doctorForm=forms.DoctorForm(request.POST,request.FILES,instance=doctor)
-        if userForm.is_valid() and doctorForm.is_valid():
+        userForm=forms.CounsellorUserForm(request.POST,instance=user)
+        counsellorForm=forms.CounsellorForm(request.POST,request.FILES,instance=counsellor)
+        if userForm.is_valid() and counsellorForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
-            doctor=doctorForm.save(commit=False)
-            doctor.status=True
-            doctor.save()
-            return redirect('admin-view-doctor')
-    return render(request,'education/admin_update_doctor.html',context=mydict)
+            counsellor=counsellorForm.save(commit=False)
+            counsellor.status=True
+            counsellor.save()
+            return redirect('admin-view-counsellor')
+    return render(request,'education/admin_update_counsellor.html',context=mydict)
 
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_add_doctor_view(request):
-    userForm=forms.DoctorUserForm()
-    doctorForm=forms.DoctorForm()
-    mydict={'userForm':userForm,'doctorForm':doctorForm}
+def admin_add_counsellor_view(request):
+    userForm=forms.CounsellorUserForm()
+    counsellorForm=forms.CounsellorForm()
+    mydict={'userForm':userForm,'counsellorForm':counsellorForm}
     if request.method=='POST':
-        userForm=forms.DoctorUserForm(request.POST)
-        doctorForm=forms.DoctorForm(request.POST, request.FILES)
-        if userForm.is_valid() and doctorForm.is_valid():
+        userForm=forms.CounsellorUserForm(request.POST)
+        counsellorForm=forms.CounsellorForm(request.POST, request.FILES)
+        if userForm.is_valid() and counsellorForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
 
-            doctor=doctorForm.save(commit=False)
-            doctor.user=user
-            doctor.status=True
-            doctor.save()
+            counsellor=counsellorForm.save(commit=False)
+            counsellor.user=user
+            counsellor.status=True
+            counsellor.save()
 
-            my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
-            my_doctor_group[0].user_set.add(user)
+            my_counsellor_group = Group.objects.get_or_create(name='Counsellor')
+            my_counsellor_group[0].user_set.add(user)
 
-        return HttpResponseRedirect('admin-view-doctor')
-    return render(request,'education/admin_add_doctor.html',context=mydict)
+        return HttpResponseRedirect('admin-view-counsellor')
+    return render(request,'education/admin_add_counsellor.html',context=mydict)
 
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_approve_doctor_view(request):
+def admin_approve_counsellor_view(request):
     #those whose approval are needed
-    doctors=models.Doctor.objects.all().filter(status=False)
-    return render(request,'education/admin_approve_doctor.html',{'doctors':doctors})
+    counsellors=models.Counsellor.objects.all().filter(status=False)
+    return render(request,'education/admin_approve_counsellor.html',{'counsellors':counsellors})
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def approve_doctor_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    doctor.status=True
-    doctor.save()
-    return redirect(reverse('admin-approve-doctor'))
+def approve_counsellor_view(request,pk):
+    counsellor=models.Counsellor.objects.get(id=pk)
+    counsellor.status=True
+    counsellor.save()
+    return redirect(reverse('admin-approve-counsellor'))
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def reject_doctor_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    user=models.User.objects.get(id=doctor.user_id)
+def reject_counsellor_view(request,pk):
+    counsellor=models.Counsellor.objects.get(id=pk)
+    user=models.User.objects.get(id=counsellor.user_id)
     user.delete()
-    doctor.delete()
-    return redirect('admin-approve-doctor')
+    counsellor.delete()
+    return redirect('admin-approve-counsellor')
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_view_doctor_specialisation_view(request):
-    doctors=models.Doctor.objects.all().filter(status=True)
-    return render(request,'education/admin_view_doctor_specialisation.html',{'doctors':doctors})
+def admin_view_counsellor_specialisation_view(request):
+    counsellors=models.Counsellor.objects.all().filter(status=True)
+    return render(request,'education/admin_view_counsellor_specialisation.html',{'counsellors':counsellors})
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_patient_view(request):
-    return render(request,'education/admin_patient.html')
+def admin_student_view(request):
+    return render(request,'education/admin_student.html')
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_view_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True)
-    return render(request,'education/admin_view_patient.html',{'patients':patients})
+def admin_view_student_view(request):
+    students=models.Student.objects.all().filter(status=True)
+    return render(request,'education/admin_view_student.html',{'students':students})
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def delete_patient_from_education_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    user=models.User.objects.get(id=patient.user_id)
+def delete_student_from_education_view(request,pk):
+    student=models.Student.objects.get(id=pk)
+    user=models.User.objects.get(id=student.user_id)
     user.delete()
-    patient.delete()
-    return redirect('admin-view-patient')
+    student.delete()
+    return redirect('admin-view-student')
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def update_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    user=models.User.objects.get(id=patient.user_id)
+def update_student_view(request,pk):
+    student=models.Student.objects.get(id=pk)
+    user=models.User.objects.get(id=student.user_id)
 
-    userForm=forms.PatientUserForm(instance=user)
-    patientForm=forms.PatientForm(request.FILES,instance=patient)
-    mydict={'userForm':userForm,'patientForm':patientForm}
+    userForm=forms.StudentUserForm(instance=user)
+    studentForm=forms.StudentForm(request.FILES,instance=student)
+    mydict={'userForm':userForm,'studentForm':studentForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST,instance=user)
-        patientForm=forms.PatientForm(request.POST,request.FILES,instance=patient)
-        if userForm.is_valid() and patientForm.is_valid():
+        userForm=forms.StudentUserForm(request.POST,instance=user)
+        studentForm=forms.StudentForm(request.POST,request.FILES,instance=student)
+        if userForm.is_valid() and studentForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
-            patient=patientForm.save(commit=False)
-            patient.status=True
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient.save()
-            return redirect('admin-view-patient')
-    return render(request,'education/admin_update_patient.html',context=mydict)
+            student=studentForm.save(commit=False)
+            student.status=True
+            student.assignedCounsellorId=request.POST.get('assignedCounsellorId')
+            student.save()
+            return redirect('admin-view-student')
+    return render(request,'education/admin_update_student.html',context=mydict)
 
 
 
@@ -338,122 +338,122 @@ def update_patient_view(request,pk):
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_add_patient_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
+def admin_add_student_view(request):
+    userForm=forms.StudentUserForm()
+    studentForm=forms.StudentForm()
+    mydict={'userForm':userForm,'studentForm':studentForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
-        if userForm.is_valid() and patientForm.is_valid():
+        userForm=forms.StudentUserForm(request.POST)
+        studentForm=forms.StudentForm(request.POST,request.FILES)
+        if userForm.is_valid() and studentForm.is_valid():
             user=userForm.save()
             user.set_password(user.password)
             user.save()
 
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.status=True
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient.save()
+            student=studentForm.save(commit=False)
+            student.user=user
+            student.status=True
+            student.assignedCounsellorId=request.POST.get('assignedCounsellorId')
+            student.save()
 
-            my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
+            my_student_group = Group.objects.get_or_create(name='Student')
+            my_student_group[0].user_set.add(user)
 
-        return HttpResponseRedirect('admin-view-patient')
-    return render(request,'education/admin_add_patient.html',context=mydict)
+        return HttpResponseRedirect('admin-view-student')
+    return render(request,'education/admin_add_student.html',context=mydict)
 
 
 
-#------------------FOR APPROVING PATIENT BY ADMIN----------------------
+#------------------FOR APPROVING student BY ADMIN----------------------
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_approve_patient_view(request):
+def admin_approve_student_view(request):
     #those whose approval are needed
-    patients=models.Patient.objects.all().filter(status=False)
-    return render(request,'education/admin_approve_patient.html',{'patients':patients})
+    students=models.Student.objects.all().filter(status=False)
+    return render(request,'education/admin_approve_student.html',{'students':students})
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def approve_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    patient.status=True
-    patient.save()
-    return redirect(reverse('admin-approve-patient'))
+def approve_student_view(request,pk):
+    student=models.Student.objects.get(id=pk)
+    student.status=True
+    student.save()
+    return redirect(reverse('admin-approve-student'))
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def reject_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    user=models.User.objects.get(id=patient.user_id)
+def reject_student_view(request,pk):
+    student=models.Student.objects.get(id=pk)
+    user=models.User.objects.get(id=student.user_id)
     user.delete()
-    patient.delete()
-    return redirect('admin-approve-patient')
+    student.delete()
+    return redirect('admin-approve-student')
 
 
 
-#--------------------- FOR DISCHARGING PATIENT BY ADMIN START-------------------------
+#--------------------- FOR DISCHARGING Student BY ADMIN START-------------------------
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def admin_discharge_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True)
-    return render(request,'education/admin_discharge_patient.html',{'patients':patients})
+def admin_discharge_student_view(request):
+    students=models.Student.objects.all().filter(status=True)
+    return render(request,'education/admin_discharge_student.html',{'students':students})
 
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def discharge_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    days=(date.today()-patient.admitDate) #2 days, 0:00:00
-    assignedDoctor=models.User.objects.all().filter(id=patient.assignedDoctorId)
+def discharge_student_view(request,pk):
+    student=models.Student.objects.get(id=pk)
+    days=(date.today()-student.admitDate) #2 days, 0:00:00
+    assignedCounsellor=models.User.objects.all().filter(id=student.assignedCounsellorId)
     d=days.days # only how many day that is 2
-    patientDict={
-        'patientId':pk,
-        'name':patient.get_name,
-        'mobile':patient.mobile,
-        'address':patient.address,
-        'symptoms':patient.symptoms,
-        'admitDate':patient.admitDate,
+    studentDict={
+        'studentId':pk,
+        'name':student.get_name,
+        'mobile':student.mobile,
+        'address':student.address,
+        'symptoms':student.symptoms,
+        'admitDate':student.admitDate,
         'todayDate':date.today(),
         'day':d,
-        'assignedDoctorName':assignedDoctor[0].first_name,
+        'assignedCounsellorName':assignedCounsellor[0].first_name,
     }
     if request.method == 'POST':
         feeDict ={
             'roomCharge':int(request.POST['roomCharge'])*int(d),
-            'doctorFee':request.POST['doctorFee'],
+            'counsellorFee':request.POST['counsellorFee'],
             'medicineCost' : request.POST['medicineCost'],
             'OtherCharge' : request.POST['OtherCharge'],
-            'total':(int(request.POST['roomCharge'])*int(d))+int(request.POST['doctorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
+            'total':(int(request.POST['roomCharge'])*int(d))+int(request.POST['counsellorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
         }
-        patientDict.update(feeDict)
-        #for updating to database patientDischargeDetails (pDD)
-        pDD=models.PatientDischargeDetails()
-        pDD.patientId=pk
-        pDD.patientName=patient.get_name
-        pDD.assignedDoctorName=assignedDoctor[0].first_name
-        pDD.address=patient.address
-        pDD.mobile=patient.mobile
-        pDD.symptoms=patient.symptoms
-        pDD.admitDate=patient.admitDate
+        studentDict.update(feeDict)
+        #for updating to database studentDischargeDetails (pDD)
+        pDD=models.StudentDischargeDetails()
+        pDD.studentId=pk
+        pDD.studentName=student.get_name
+        pDD.assignedCounsellorName=assignedCounsellor[0].first_name
+        pDD.address=student.address
+        pDD.mobile=student.mobile
+        pDD.symptoms=student.symptoms
+        pDD.admitDate=student.admitDate
         pDD.releaseDate=date.today()
         pDD.daySpent=int(d)
         pDD.medicineCost=int(request.POST['medicineCost'])
         pDD.roomCharge=int(request.POST['roomCharge'])*int(d)
-        pDD.doctorFee=int(request.POST['doctorFee'])
+        pDD.counsellorFee=int(request.POST['counsellorFee'])
         pDD.OtherCharge=int(request.POST['OtherCharge'])
-        pDD.total=(int(request.POST['roomCharge'])*int(d))+int(request.POST['doctorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
+        pDD.total=(int(request.POST['roomCharge'])*int(d))+int(request.POST['counsellorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
         pDD.save()
-        return render(request,'education/patient_final_bill.html',context=patientDict)
-    return render(request,'education/patient_generate_bill.html',context=patientDict)
+        return render(request,'education/student_final_bill.html',context=studentDict)
+    return render(request,'education/student_generate_bill.html',context=studentDict)
 
 
 
-#--------------for discharge patient bill (pdf) download and printing
+#--------------for discharge student bill (pdf) download and printing
 import io
 from xhtml2pdf import pisa
 from django.template.loader import get_template
@@ -473,10 +473,10 @@ def render_to_pdf(template_src, context_dict):
 
 
 def download_pdf_view(request,pk):
-    dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=pk).order_by('-id')[:1]
+    dischargeDetails=models.StudentDischargeDetails.objects.all().filter(studentId=pk).order_by('-id')[:1]
     dict={
-        'patientName':dischargeDetails[0].patientName,
-        'assignedDoctorName':dischargeDetails[0].assignedDoctorName,
+        'studentName':dischargeDetails[0].studentName,
+        'assignedCounsellorName':dischargeDetails[0].assignedCounsellorName,
         'address':dischargeDetails[0].address,
         'mobile':dischargeDetails[0].mobile,
         'symptoms':dischargeDetails[0].symptoms,
@@ -485,7 +485,7 @@ def download_pdf_view(request,pk):
         'daySpent':dischargeDetails[0].daySpent,
         'medicineCost':dischargeDetails[0].medicineCost,
         'roomCharge':dischargeDetails[0].roomCharge,
-        'doctorFee':dischargeDetails[0].doctorFee,
+        'counsellorFee':dischargeDetails[0].counsellorFee,
         'OtherCharge':dischargeDetails[0].OtherCharge,
         'total':dischargeDetails[0].total,
     }
@@ -518,10 +518,10 @@ def admin_add_appointment_view(request):
         appointmentForm=forms.AppointmentForm(request.POST)
         if appointmentForm.is_valid():
             appointment=appointmentForm.save(commit=False)
-            appointment.doctorId=request.POST.get('doctorId')
-            appointment.patientId=request.POST.get('patientId')
-            appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
-            appointment.patientName=models.User.objects.get(id=request.POST.get('patientId')).first_name
+            appointment.counsellorId=request.POST.get('counsellorId')
+            appointment.studentId=request.POST.get('studentId')
+            appointment.counsellorName=models.User.objects.get(id=request.POST.get('counsellorId')).first_name
+            appointment.studentName=models.User.objects.get(id=request.POST.get('studentId')).first_name
             appointment.status=True
             appointment.save()
         return HttpResponseRedirect('admin-view-appointment')
@@ -564,128 +564,128 @@ def reject_appointment_view(request,pk):
 
 
 #---------------------------------------------------------------------------------
-#------------------------ DOCTOR RELATED VIEWS START ------------------------------
+#------------------------ Counsellor RELATED VIEWS START ------------------------------
 #---------------------------------------------------------------------------------
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_dashboard_view(request):
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_dashboard_view(request):
     #for three cards
-    patientcount=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).count()
-    appointmentcount=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).count()
-    patientdischarged=models.PatientDischargeDetails.objects.all().distinct().filter(assignedDoctorName=request.user.first_name).count()
+    studentcount=models.Student.objects.all().filter(status=True,assignedCounsellorId=request.user.id).count()
+    appointmentcount=models.Appointment.objects.all().filter(status=True,counsellorId=request.user.id).count()
+    studentdischarged=models.StudentDischargeDetails.objects.all().distinct().filter(assignedCounsellorName=request.user.first_name).count()
 
-    #for  table in doctor dashboard
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).order_by('-id')
-    patientid=[]
+    #for  table in Counsellor dashboard
+    appointments=models.Appointment.objects.all().filter(status=True,counsellorId=request.user.id).order_by('-id')
+    studentid=[]
     for a in appointments:
-        patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid).order_by('-id')
-    appointments=zip(appointments,patients)
+        studentid.append(a.studentId)
+    students=models.Student.objects.all().filter(status=True,user_id__in=studentid).order_by('-id')
+    appointments=zip(appointments,students)
     mydict={
-    'patientcount':patientcount,
+    'studentcount':studentcount,
     'appointmentcount':appointmentcount,
-    'patientdischarged':patientdischarged,
+    'studentdischarged':studentdischarged,
     'appointments':appointments,
-    'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    'counsellor':models.Counsellor.objects.get(user_id=request.user.id), #for profile picture of counsellor in sidebar
     }
-    return render(request,'education/doctor_dashboard.html',context=mydict)
+    return render(request,'education/counsellor_dashboard.html',context=mydict)
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_patient_view(request):
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_student_view(request):
     mydict={
-    'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    'counsellor':models.Counsellor.objects.get(user_id=request.user.id), #for profile picture of counsellor in sidebar
     }
-    return render(request,'education/doctor_patient.html',context=mydict)
+    return render(request,'education/counsellor_student.html',context=mydict)
 
 
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_view_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id)
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    return render(request,'education/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_view_student_view(request):
+    students=models.Student.objects.all().filter(status=True,assignedCounsellorId=request.user.id)
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
+    return render(request,'education/counsellor_view_student.html',{'students':students,'counsellor':counsellor})
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
 def search_view(request):
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
     # whatever user write in search box we get in query
     query = request.GET['query']
-    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
-    return render(request,'education/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
+    students=models.Student.objects.all().filter(status=True,assignedCounsellorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
+    return render(request,'education/counsellor_view_student.html',{'students':students,'counsellor':counsellor})
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_view_discharge_patient_view(request):
-    dischargedpatients=models.PatientDischargeDetails.objects.all().distinct().filter(assignedDoctorName=request.user.first_name)
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    return render(request,'education/doctor_view_discharge_patient.html',{'dischargedpatients':dischargedpatients,'doctor':doctor})
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_view_discharge_student_view(request):
+    dischargedstudents=models.StudentDischargeDetails.objects.all().distinct().filter(assignedCounsellorName=request.user.first_name)
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of Counsellor in sidebar
+    return render(request,'education/counsellor_view_discharge_student.html',{'dischargedstudents':dischargedstudents,'counsellor':counsellor})
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_appointment_view(request):
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    return render(request,'education/doctor_appointment.html',{'doctor':doctor})
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_appointment_view(request):
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of Counsellor in sidebar
+    return render(request,'education/counsellor_appointment.html',{'counsellor':counsellor})
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_view_appointment_view(request):
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
-    patientid=[]
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_view_appointment_view(request):
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
+    appointments=models.Appointment.objects.all().filter(status=True,counsellorId=request.user.id)
+    studentid=[]
     for a in appointments:
-        patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
-    appointments=zip(appointments,patients)
-    return render(request,'education/doctor_view_appointment.html',{'appointments':appointments,'doctor':doctor})
+        studentid.append(a.studentId)
+    students=models.Student.objects.all().filter(status=True,user_id__in=studentid)
+    appointments=zip(appointments,students)
+    return render(request,'education/counsellor_view_appointment.html',{'appointments':appointments,'counsellor':counsellor})
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
-def doctor_delete_appointment_view(request):
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
-    patientid=[]
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
+def counsellor_delete_appointment_view(request):
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
+    appointments=models.Appointment.objects.all().filter(status=True,counsellorId=request.user.id)
+    studentid=[]
     for a in appointments:
-        patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
-    appointments=zip(appointments,patients)
-    return render(request,'education/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
+        studentid.append(a.studentId)
+    students=models.Student.objects.all().filter(status=True,user_id__in=studentid)
+    appointments=zip(appointments,students)
+    return render(request,'education/counsellor_delete_appointment.html',{'appointments':appointments,'counsellor':counsellor})
 
 
 
-@login_required(login_url='doctorlogin')
-@user_passes_test(is_doctor)
+@login_required(login_url='counsellorlogin')
+@user_passes_test(is_counsellor)
 def delete_appointment_view(request,pk):
     appointment=models.Appointment.objects.get(id=pk)
     appointment.delete()
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
-    patientid=[]
+    counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
+    appointments=models.Appointment.objects.all().filter(status=True,counsellorId=request.user.id)
+    studentid=[]
     for a in appointments:
-        patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
-    appointments=zip(appointments,patients)
-    return render(request,'education/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
+        studentid.append(a.studentId)
+    students=models.Student.objects.all().filter(status=True,user_id__in=studentid)
+    appointments=zip(appointments,students)
+    return render(request,'education/counsellor_delete_appointment.html',{'appointments':appointments,'counsellor':counsellor})
 
 
 
 #---------------------------------------------------------------------------------
-#------------------------ DOCTOR RELATED VIEWS END ------------------------------
+#------------------------ counsellor RELATED VIEWS END ------------------------------
 #---------------------------------------------------------------------------------
 
 
@@ -694,124 +694,124 @@ def delete_appointment_view(request,pk):
 
 
 #---------------------------------------------------------------------------------
-#------------------------ PATIENT RELATED VIEWS START ------------------------------
+#------------------------ Student RELATED VIEWS START ------------------------------
 #---------------------------------------------------------------------------------
-@login_required(login_url='patientlogin')
-@user_passes_test(is_patient)
-def patient_dashboard_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id)
-    doctor=models.Doctor.objects.get(user_id=patient.assignedDoctorId)
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_dashboard_view(request):
+    student=models.Student.objects.get(user_id=request.user.id)
+    counsellor=models.Counsellor.objects.get(user_id=student.assignedCounsellorId)
     mydict={
-    'patient':patient,
-    'doctorName':doctor.get_name,
-    'doctorMobile':doctor.mobile,
-    'doctorAddress':doctor.address,
-    'symptoms':patient.symptoms,
-    'doctorDepartment':doctor.department,
-    'admitDate':patient.admitDate,
+    'student':student,
+    'counsellorName':counsellor.get_name,
+    'counsellorMobile':counsellor.mobile,
+    'counsellorAddress':counsellor.address,
+    'symptoms':student.symptoms,
+    'counsellorDepartment':counsellor.department,
+    'admitDate':student.admitDate,
     }
-    return render(request,'education/patient_dashboard.html',context=mydict)
+    return render(request,'education/student_dashboard.html',context=mydict)
 
 
 
-@login_required(login_url='patientlogin')
-@user_passes_test(is_patient)
-def patient_appointment_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
-    return render(request,'education/patient_appointment.html',{'patient':patient})
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_appointment_view(request):
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of Student in sidebar
+    return render(request,'education/student_appointment.html',{'student':student})
 
 
 
-@login_required(login_url='patientlogin')
-@user_passes_test(is_patient)
-def patient_book_appointment_view(request):
-    appointmentForm=forms.PatientAppointmentForm()
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_book_appointment_view(request):
+    appointmentForm=forms.StudentAppointmentForm()
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of Student in sidebar
     message=None
-    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message}
+    mydict={'appointmentForm':appointmentForm,'student':student,'message':message}
     if request.method=='POST':
-        appointmentForm=forms.PatientAppointmentForm(request.POST)
+        appointmentForm=forms.StudentAppointmentForm(request.POST)
         if appointmentForm.is_valid():
-            print(request.POST.get('doctorId'))
+            print(request.POST.get('counsellorId'))
             desc=request.POST.get('description')
 
-            doctor=models.Doctor.objects.get(user_id=request.POST.get('doctorId'))
+            counsellor=models.Counsellor.objects.get(user_id=request.POST.get('counsellorId'))
             
             appointment=appointmentForm.save(commit=False)
-            appointment.doctorId=request.POST.get('doctorId')
-            appointment.patientId=request.user.id #----user can choose any patient but only their info will be stored
-            appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
-            appointment.patientName=request.user.first_name #----user can choose any patient but only their info will be stored
+            appointment.counsellorId=request.POST.get('counsellorId')
+            appointment.studentId=request.user.id #----user can choose any student but only their info will be stored
+            appointment.counsellorName=models.User.objects.get(id=request.POST.get('counsellorId')).first_name
+            appointment.studentName=request.user.first_name #----user can choose any student but only their info will be stored
             appointment.status=False
             appointment.save()
-        return HttpResponseRedirect('patient-view-appointment')
-    return render(request,'education/patient_book_appointment.html',context=mydict)
+        return HttpResponseRedirect('student-view-appointment')
+    return render(request,'education/student_book_appointment.html',context=mydict)
 
 
 
-def patient_view_doctor_view(request):
-    doctors=models.Doctor.objects.all().filter(status=True)
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
-    return render(request,'education/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
+def student_view_counsellor_view(request):
+    counsellors=models.Counsellor.objects.all().filter(status=True)
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of student in sidebar
+    return render(request,'education/student_view_counsellor.html',{'student':student,'counsellors':counsellors})
 
 
 
-def search_doctor_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+def search_counsellor_view(request):
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of student in sidebar
     
     # whatever user write in search box we get in query
     query = request.GET['query']
-    doctors=models.Doctor.objects.all().filter(status=True).filter(Q(department__icontains=query)| Q(user__first_name__icontains=query))
-    return render(request,'education/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
+    counsellors=models.Counsellor.objects.all().filter(status=True).filter(Q(department__icontains=query)| Q(user__first_name__icontains=query))
+    return render(request,'education/student_view_counsellor.html',{'student':student,'counsellors':counsellors})
 
 
 
 
-@login_required(login_url='patientlogin')
-@user_passes_test(is_patient)
-def patient_view_appointment_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
-    appointments=models.Appointment.objects.all().filter(patientId=request.user.id)
-    return render(request,'education/patient_view_appointment.html',{'appointments':appointments,'patient':patient})
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_view_appointment_view(request):
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of Student in sidebar
+    appointments=models.Appointment.objects.all().filter(studentId=request.user.id)
+    return render(request,'education/student_view_appointment.html',{'appointments':appointments,'student':student})
 
 
 
-@login_required(login_url='patientlogin')
-@user_passes_test(is_patient)
-def patient_discharge_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
-    dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=patient.id).order_by('-id')[:1]
-    patientDict=None
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_discharge_view(request):
+    student=models.Student.objects.get(user_id=request.user.id) #for profile picture of student in sidebar
+    dischargeDetails=models.StudentDischargeDetails.objects.all().filter(studentId=student.id).order_by('-id')[:1]
+    studentDict=None
     if dischargeDetails:
-        patientDict ={
+        studentDict ={
         'is_discharged':True,
-        'patient':patient,
-        'patientId':patient.id,
-        'patientName':patient.get_name,
-        'assignedDoctorName':dischargeDetails[0].assignedDoctorName,
-        'address':patient.address,
-        'mobile':patient.mobile,
-        'symptoms':patient.symptoms,
-        'admitDate':patient.admitDate,
+        'student':student,
+        'studentId':student.id,
+        'studentName':student.get_name,
+        'assignedCounsellorName':dischargeDetails[0].assignedCounsellorName,
+        'address':student.address,
+        'mobile':student.mobile,
+        'symptoms':student.symptoms,
+        'admitDate':student.admitDate,
         'releaseDate':dischargeDetails[0].releaseDate,
         'daySpent':dischargeDetails[0].daySpent,
         'medicineCost':dischargeDetails[0].medicineCost,
         'roomCharge':dischargeDetails[0].roomCharge,
-        'doctorFee':dischargeDetails[0].doctorFee,
+        'counsellorFee':dischargeDetails[0].counsellorFee,
         'OtherCharge':dischargeDetails[0].OtherCharge,
         'total':dischargeDetails[0].total,
         }
-        print(patientDict)
+        print(studentDict)
     else:
-        patientDict={
+        studentDict={
             'is_discharged':False,
-            'patient':patient,
-            'patientId':request.user.id,
+            'student':student,
+            'studentId':request.user.id,
         }
-    return render(request,'education/patient_discharge.html',context=patientDict)
+    return render(request,'education/student_discharge.html',context=studentDict)
 
 
-#------------------------ PATIENT RELATED VIEWS END ------------------------------
+#------------------------ student RELATED VIEWS END ------------------------------
 #---------------------------------------------------------------------------------
 
 
@@ -845,10 +845,9 @@ def contactus_view(request):
 #---------------------------------------------------------------------------------
 
 
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+#---------------------------------------------------------------------------------
+#------------------------ API RELATED VIEWS Start ------------------------------
+#---------------------------------------------------------------------------------
 
 
 from django.http import JsonResponse
@@ -907,3 +906,7 @@ def call_chatgpt_api(prompt):
         print("Failed to get response after multiple retries.")
         return None
 
+
+#---------------------------------------------------------------------------------
+#------------------------ API RELATED VIEWS END ------------------------------
+#---------------------------------------------------------------------------------
