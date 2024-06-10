@@ -22,6 +22,7 @@ urlpatterns = [
     path('adminclick', views.adminclick_view),
     path('counsellorclick', views.counsellorclick_view),
     path('studentclick', views.studentclick_view),
+    
 
     path('adminsignup', views.admin_signup_view),
     path('counsellorsignup', views.counsellor_signup_view,name='counsellorsignup'),
@@ -99,6 +100,9 @@ urlpatterns +=[
     path('student-view-counsellor', views.student_view_counsellor_view,name='student-view-counsellor'),
     path('searchcounsellor', views.search_counsellor_view,name='searchcounsellor'),
     path('student-discharge', views.student_discharge_view,name='student-discharge'),
+    
+    path('student_test', views.test_view,name='test_view')
+    
 
 ]
 

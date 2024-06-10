@@ -40,8 +40,6 @@ def studentclick_view(request):
     return render(request,'education/studentclick.html')
 
 
-
-
 def admin_signup_view(request):
     form=forms.AdminSigupForm()
     if request.method=='POST':
@@ -905,6 +903,11 @@ def call_chatgpt_api(prompt):
                 break
         print("Failed to get response after multiple retries.")
         return None
+    
+def test_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return render(request,'education/test.html')
 
 
 #---------------------------------------------------------------------------------
