@@ -1,1 +1,1 @@
-# carrer-recommendation
+# AI Based Education Recommendation System
