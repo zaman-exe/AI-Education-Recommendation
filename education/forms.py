@@ -44,13 +44,13 @@ class StudentForm(forms.ModelForm):
     assignedCounsellorId=forms.ModelChoiceField(queryset=models.Counsellor.objects.all().filter(status=True),empty_label="Name and Department", to_field_name="user_id")
     class Meta:
         model=models.Student
-        fields=['address','mobile','status','symptoms','profile_pic']
+        fields=['address','mobile','status','studyArea','profile_pic']
 
 
 
 class AppointmentForm(forms.ModelForm):
     counsellorId=forms.ModelChoiceField(queryset=models.Counsellor.objects.all().filter(status=True),empty_label="Counsellor Name and Department", to_field_name="user_id")
-    studentId=forms.ModelChoiceField(queryset=models.Student.objects.all().filter(status=True),empty_label="Student Name and Symptoms", to_field_name="user_id")
+    studentId=forms.ModelChoiceField(queryset=models.Student.objects.all().filter(status=True),empty_label="Student Name and StudyArea", to_field_name="user_id")
     class Meta:
         model=models.Appointment
         fields=['description','status']

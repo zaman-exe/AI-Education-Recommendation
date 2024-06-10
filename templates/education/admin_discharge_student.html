@@ -29,7 +29,7 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Symptoms</th>
+          <th>StudyArea</th>
           <th>Mobile</th>
           <th>Discharge</th>
         </tr>
@@ -37,7 +37,7 @@
       {% for p in students %}
       <tr>
         <td> {{p.get_name}}</td>
-        <td>{{p.symptoms}}</td>
+        <td>{{p.studyArea}}</td>
         <td>{{p.mobile}}</td>
         <td><a class="btn btn-primary btn-xs" href="{% url 'discharge-student' p.id  %}"><span class="glyphicon glyphicon-log-out"></span></a></td>
       </tr>

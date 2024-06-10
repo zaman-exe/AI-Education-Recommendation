@@ -414,7 +414,7 @@ def discharge_student_view(request,pk):
         'name':student.get_name,
         'mobile':student.mobile,
         'address':student.address,
-        'symptoms':student.symptoms,
+        'studyArea':student.studyArea,
         'admitDate':student.admitDate,
         'todayDate':date.today(),
         'day':d,
@@ -436,7 +436,7 @@ def discharge_student_view(request,pk):
         pDD.assignedCounsellorName=assignedCounsellor[0].first_name
         pDD.address=student.address
         pDD.mobile=student.mobile
-        pDD.symptoms=student.symptoms
+        pDD.studyArea=student.studyArea
         pDD.admitDate=student.admitDate
         pDD.releaseDate=date.today()
         pDD.daySpent=int(d)
@@ -477,7 +477,7 @@ def download_pdf_view(request,pk):
         'assignedCounsellorName':dischargeDetails[0].assignedCounsellorName,
         'address':dischargeDetails[0].address,
         'mobile':dischargeDetails[0].mobile,
-        'symptoms':dischargeDetails[0].symptoms,
+        'studyArea':dischargeDetails[0].studyArea,
         'admitDate':dischargeDetails[0].admitDate,
         'releaseDate':dischargeDetails[0].releaseDate,
         'daySpent':dischargeDetails[0].daySpent,
@@ -616,7 +616,7 @@ def search_view(request):
     counsellor=models.Counsellor.objects.get(user_id=request.user.id) #for profile picture of counsellor in sidebar
     # whatever user write in search box we get in query
     query = request.GET['query']
-    students=models.Student.objects.all().filter(status=True,assignedCounsellorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
+    students=models.Student.objects.all().filter(status=True,assignedCounsellorId=request.user.id).filter(Q(studyArea__icontains=query)|Q(user__first_name__icontains=query))
     return render(request,'education/counsellor_view_student.html',{'students':students,'counsellor':counsellor})
 
 
@@ -704,7 +704,7 @@ def student_dashboard_view(request):
     'counsellorName':counsellor.get_name,
     'counsellorMobile':counsellor.mobile,
     'counsellorAddress':counsellor.address,
-    'symptoms':student.symptoms,
+    'studyArea':student.studyArea,
     'counsellorDepartment':counsellor.department,
     'admitDate':student.admitDate,
     }
@@ -789,7 +789,7 @@ def student_discharge_view(request):
         'assignedCounsellorName':dischargeDetails[0].assignedCounsellorName,
         'address':student.address,
         'mobile':student.mobile,
-        'symptoms':student.symptoms,
+        'studyArea':student.studyArea,
         'admitDate':student.admitDate,
         'releaseDate':dischargeDetails[0].releaseDate,
         'daySpent':dischargeDetails[0].daySpent,

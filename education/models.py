@@ -33,7 +33,7 @@ class Student(models.Model):
     profile_pic= models.ImageField(upload_to='profile_pic/StudentProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=False)
-    symptoms = models.CharField(max_length=100,null=False)
+    studyArea = models.CharField(max_length=100,null=False)
     assignedCounsellorId = models.PositiveIntegerField(null=True)
     admitDate=models.DateField(auto_now=True)
     status=models.BooleanField(default=False)
@@ -44,7 +44,7 @@ class Student(models.Model):
     def get_id(self):
         return self.user.id
     def __str__(self):
-        return self.user.first_name+" ("+self.symptoms+")"
+        return self.user.first_name+" ("+self.studyArea+")"
 
 
 class Appointment(models.Model):
@@ -64,7 +64,7 @@ class StudentDischargeDetails(models.Model):
     assignedCounsellorName=models.CharField(max_length=40)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
-    symptoms = models.CharField(max_length=100,null=True)
+    studyArea = models.CharField(max_length=100,null=True)
 
     admitDate=models.DateField(null=False)
     releaseDate=models.DateField(null=False)
