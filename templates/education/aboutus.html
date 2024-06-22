@@ -6,40 +6,105 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>AI-Based Education Recommendation System</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <!-- Animate.css for animations -->
+  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+  <!-- Custom CSS -->
   <style media="screen">
+    body {
+      background: url('{% static "images/background.png" %}') no-repeat center center fixed;
+      background-size: cover;
+    }
+
     .jumbotron {
+      background-color: rgba(255, 255, 255, 0.8);
       margin-top: 0px;
       margin-bottom: 0px;
+      padding: 2rem;
+      border-radius: 15px;
     }
 
-    .jumbotron h1 {
-      text-align: center;
+    .section {
+      padding: 50px 0;
     }
 
-    .alert {
-      margin: 0px;
+    .section-light {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .section-dark {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+    }
+
+    .animated {
+      animation-duration: 2s;
+    }
+
+    .fadeIn {
+      animation-name: fadeIn;
+    }
+
+    .background1 {
+      background: url('{% static "images/background.png" %}') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .background2 {
+      background: url('{% static "images/b.png" %}') no-repeat center center fixed;
+      background-size: cover;
     }
   </style>
-  <title>AI Education Recommendation System</title>
 </head>
 
 <body>
   {% include "education/navbar.html" %}
   <br><br>
   <center>
-    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
+    <h1 class=' alert-success  fadeIn' style="margin-bottom:20px;"> About Us !</h1>
   </center>
-  <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
-    <h1 class="display-4">Hello</h1>
-    <p class="lead">A service dedicated to education Admin, Counsellors and Student.</p>
-    <hr class="my-4">
-    <p>Explore our Website.</p>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
-    </p>
-  </div>
-  {% include "education/footer.html" %}
-</body>
 
+ 
+
+  <div class="section section-light animated fadeIn background1">
+    <div class=" animated fadeIn">
+      <h1 class="text-center">On this Page</h1>
+      <p class="text-center">A service dedicated to education Admin, Counsellors, and Students.</p>
+      <hr class="my-4">
+      <p>Explore our Website.</p>
+      <p class="lead">
+        <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
+      </p>
+    </div>
+    <div class="container">
+      <h2 class="text-center">Our Mission</h2>
+      <p>We aim to revolutionize the education system by providing AI-based recommendations to enhance learning experiences. Our system assists education administrators, counselors, and students by offering personalized educational pathways.</p>
+    </div>
+  </div>
+
+  <div class="section section-dark animated fadeIn background2">
+    <div class="container">
+      <h2 class="text-center">Our Vision</h2>
+      <p>Our vision is to create an inclusive and adaptive education environment where every student can thrive. By leveraging AI technology, we strive to make education accessible, engaging, and effective for everyone.</p>
+    </div>
+  </div>
+
+  <div class="section section-light animated fadeIn">
+    <div class="container">
+      <h2 class="text-center">Join Us</h2>
+      <p>Become a part of our community and contribute to the future of education. Whether you are an administrator, counselor, or student, we have resources and tools to help you succeed.</p>
+      <p class="lead text-center">
+        <a class="btn btn-primary btn-lg" href="/studentlogin" role="button">Join Now</a>
+      </p>
+    </div>
+  </div>
+
+  {% include "education/footer.html" %}
+
+  <!-- Bootstrap and jQuery scripts -->
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
 
 </html>
